@@ -13,15 +13,15 @@
 <span id="#initial_setup" >
 1.  Initial Setup: <a name="initial_setup"></a>
 
-  To create a next project, we only need to create a folder and init a npm project:
+  To create a next project, we only need to create a folder and init a yarn project:
 
         mkdir Workshop
         cd Workshop
-        npm init
+        yarn init
 
   Install NextJS packages and dependencies:
 
-        npm install --save next react react-dom
+        yarn add next react react-dom
 
   Add the following scripts in your package.json:
 
@@ -48,7 +48,7 @@
 
   Let's run the dev server:
 
-        npm run dev
+        yarn dev
 
   In the address `http://localhost:3000/hello` we should watch our first page in NextJS.
 
@@ -91,18 +91,17 @@
 
   First create `next.config.js` in the root directory of our project:
 
-    `next.config.js`
-    module.exports = {}
+  `next.config.js`
 
-  When we are working with webpack without NextJS, that is, we install webpack ourselves and create a `webpack.config.js`, to have a absolute import you must set the following:
+          module.exports = {}
 
-  `webpack.config.js`
+  > When we are working with webpack without NextJS, that is, we install webpack ourselves and create a `webpack.config.js`. To have an absolute import you must set the config file like this:
 
-        resolve: {
-          modules: [
-            path.resolve('./')
-          ]
-        }
+  > resolve: {
+      modules: [
+        path.resolve('./')
+      ]
+    }
 
   In NextJS, the json exported in `next.config.js` can have a field called webpack:
 
@@ -139,7 +138,7 @@
 
   Run in the terminal:
 
-        npm install -g eslint
+        yarn add eslint
 
         eslint --init
 
@@ -155,9 +154,10 @@
     8. ❯ JavaScript
     9. ❯ (missing dependencies) ... install them with npm? ❯ Y
 
+  The last `Y` will create a `package-lock.json` file, just delete it and run `yarn`.
   We will end with a `.eslintrc.js` file in our root path.
 
-  If we have in vscode the eslint extension you will notice that the IDE will be warning us with every lint error.
+  If we have in vsCode the eslint extension you will notice that the IDE will be warning us with every lint error.
 
   There are some additions we should include in our `.eslintrc.js` config, because we dont want to deal with them:
 
@@ -165,6 +165,8 @@
   - JSX not allowed in files with extension '.js'eslint(react/jsx-filename-extension)
 
   So, let's add to the file the following rules:
+
+  >If your `rules` property doesn't have quotes, it will work without them too.
 
         "rules": {
           "react/react-in-jsx-scope": "off",
@@ -174,7 +176,7 @@
 
   But, we will still have to set some settings to avoid warnings about absolute import and other react features, first install `babel-eslint`:
 
-        npm install eslint@4.x babel-eslint@8 --save-dev
+        yarn add eslint@4.x babel-eslint@8 --dev
 
   Then add this to the `.eslintrc.js` file:
 
@@ -186,12 +188,12 @@
           },
           "react": {
             "pragma": "React",
-            "version": "16.9.0"
+            "version": "16.10.0"
           }
         },
         "parser": "babel-eslint",
 
-  Almost ready, add in the globals the React field, like this:
+  Almost ready, same file, up in globals property, add a React field like this:
 
         "globals": {
           "Atomics": 'readonly',
@@ -199,7 +201,7 @@
           "React": 'writable',
         }
 
-  To avoid that eslint warns us about having React without importing, actually NextJS is importing it in background.
+  That "React" line is to avoid that eslint warns  about having React without importing, because actually NextJS is importing it in background.
 
   If we run:
 
@@ -213,36 +215,38 @@
 
   Well, first, NextJS in its documentation shows a Built-in CSS support, which uses `styled-jsx` to isolated scoped CSS. This is the example provided by them:
 
-        function HelloWorld() {
-          return (
-            <div>
-              Hello world
-              <p>scoped!</p>
-              <style jsx>{`
-                p {
-                  color: blue;
-                }
-                div {
-                  background: red;
-                }
-                @media (max-width: 600px) {
-                  div {
-                    background: blue;
-                  }
-                }
-              `}</style>
-              <style global jsx>{`
-                body {
-                  background: black;
-                }
-              `}</style>
-            </div>
-          )
-        }
+```jsx
+  function HelloWorld() {
+    return (
+      <div>
+        Hello world
+        <p>scoped!</p>
+        <style jsx>{`
+          p {
+            color: blue;
+          }
+          div {
+            background: red;
+          }
+          @media (max-width: 600px) {
+            div {
+              background: blue;
+            }
+          }
+        `}</style>
+        <style global jsx>{`
+          body {
+            background: black;
+          }
+        `}</style>
+      </div>
+    )
+  }
 
-        export default HelloWorld;
+  export default HelloWorld;
+```
 
-  In this tutorial we are not going to use this, because I don't like it :P
+  In this tutorial we are not going to use this, because it looks horrible :P
 
   We will be using scss files, and for that we need a dependency: `next-sass`
 
@@ -251,17 +255,19 @@
 
   Its installation is really easy:
 
-        npm install --save @zeit/next-sass node-sass
+        yarn add @zeit/next-sass node-sass
 
-  To use it we only need to wrap the exported json of `next.config.js`:
+  To use it we only need to wrap the exported json of `next.config.js` in a `withSass` variable. So import the library and wrap it like this:
 
   `next.config.js`
 
-        const withSass = require('@zeit/next-sass')
+```jsx
+  const withSass = require('@zeit/next-sass')
 
-        module.exports = withSass({
-          /* config options here */
-        })
+  module.exports = withSass({
+    /* same options here */
+  })
+```
 
   That is enough to style our cta:
 
@@ -269,23 +275,27 @@
 
   `components/cta/cta.scss`
 
-        .superCta {
-          background-color: white;
-          font-size: 20px;
-          border: 1px solid;
-        }
+```css
+  .superCta {
+    background-color: white;
+    font-size: 20px;
+    border: 1px solid;
+  }
+```
 
   `components/cta/cta.js`
 
-        import './cta.scss';
+```js
+  import './cta.scss';
 
-        class Cta extends React.Component {
-          render() {
-            return <button className='superCta'>Click me</button>;
-          }
-        }
+  class Cta extends React.Component {
+    render() {
+      return <button className='superCta'>Click me</button>;
+    }
+  }
 
-        export default Cta;
+  export default Cta;
+```
 
   Cool, now we can use scss. What if we use the cool CSS Modules?
 
@@ -298,31 +308,37 @@
 
   And change `components/cta/cta.js` for:
 
-        import css from './cta.scss';
+```js
+  import css from './cta.scss';
 
-        class Cta extends React.Component {
-          render() {
-            return <button className={css.superCta}>Click me</button>;
-          }
-        }
+  class Cta extends React.Component {
+    render() {
+      return <button className={css.superCta}>Click me</button>;
+    }
+  }
 
-        export default Cta;
+  export default Cta;
+```
 
   `css` is a map, with the name of the class is scss and the hash name generated for CSS modules. Example:
 
-        {
-          superCta: "oz3A60u9ZTGJI-7A1n1go"
-        }
+```css
+  {
+    superCta: "oz3A60u9ZTGJI-7A1n1go"
+  }
+```
 
   In the browser we have:
 
-        <button class="oz3A60u9ZTGJI-7A1n1go">Click me</button>
+```html
+  <button class="oz3A60u9ZTGJI-7A1n1go">Click me</button>
+```
 
   There is a problem we haven't tackle, what if we want global styles, like resets, colors, media queries?
 
   We need to install a new dependency `sass-resources-loader`
 
-        npm install sass-resources-loader
+        yarn add sass-resources-loader
 
   And again, let's add more rules to our `next.config.js`:
 
@@ -348,15 +364,17 @@
 
   For example, import a reset.scss:
 
-        @import './reset.scss';
+```scss
+  @import './reset.scss';
+```
   
   Of course `reset.scss` have to exist, and it could be:
 
 ```scss
-        * {
-          margin: 0;
-          padding: 0;
-        }
+  * {
+    margin: 0;
+    padding: 0;
+  }
 ```
 
 <span id="#routing" >
